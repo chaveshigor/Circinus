@@ -8,7 +8,7 @@ class CreateProfiles < ActiveRecord::Migration[6.1]
       t.datetime :born
       t.text :description
       t.string :city
-      t.user :belongs_to
+      t.references :user, null: false, foreign_key: true
 
       t.timestamps
     end
