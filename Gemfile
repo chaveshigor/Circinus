@@ -11,6 +11,8 @@ gem 'rails', '~> 6.1.4', '>= 6.1.4.6'
 gem 'pg', '~> 1.1'
 # Devise gem
 gem 'devise'
+# http gem
+gem 'http'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
