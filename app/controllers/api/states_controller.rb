@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  class StateController < ApplicationController
+  class StatesController < ApplicationController
     def index
       all_states = State.all
 

@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   namespace :api do
-    resources :state
+    resources :states
   end
   root 'pages#index'
   get '*path', to: 'pages#index'
