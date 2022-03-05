@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   before_create :set_hash_pass, :sanitaze
   has_one :profile
-  validates :email, presence: true, format: { with: /\A[a-zA-Z_0-9-]{1,}@[a-zA-Z.]{1,}+\z/, message: 'invalid email' }
+  validates :email, presence: true, format: { with: /\A[a-zA-Z_0-9-]{1,}@[a-zA-Z.]{1,}\z/, message: 'invalid email' }
   validates :password_digest, presence: true, length: { minimum: 8 }
 
   private
