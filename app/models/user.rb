@@ -5,6 +5,12 @@ class User < ApplicationRecord
   has_one :profile
   validates :email, presence: true, format: { with: /\A[a-zA-Z_0-9-]{1,}@[a-zA-Z.]{1,}\z/, message: 'invalid email' }
   validates :password_digest, presence: true, length: { minimum: 8 }
+  validates :first_name, presence: true, length: { minimum: 2 }
+  validates :last_name, presence: true, length: { minimum: 2 }
+
+  def full_name
+    "#{first_name.titleize} #{last_name.titleize}"
+  end
 
   private
 
@@ -14,5 +20,7 @@ class User < ApplicationRecord
 
   def sanitaze
     self.email = email.downcase
+    self.first_name = first_name.downcase
+    self.last_name = last_name.downcase
   end
 end
