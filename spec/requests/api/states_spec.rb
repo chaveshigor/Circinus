@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'json'
 
 RSpec.describe 'Api::States', type: :request do
   describe 'GET /index' do
@@ -9,7 +8,8 @@ RSpec.describe 'Api::States', type: :request do
       get '/api/states'
 
       all_states = JSON.parse(response.body)
-      expect(all_states.count).to eq(27)
+      number_of_states = State.all.count
+      expect(all_states.count).to eq(number_of_states)
     end
   end
 end
