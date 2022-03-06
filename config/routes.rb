@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       # resources :registration
       post 'registration', to: 'registration#create'
       delete 'registration', to: 'registration#destroy'
+      put 'registration/:user_id/:confirmation_token', to: 'registration#confirmate_account'
     end
   end
   root 'pages#index'
