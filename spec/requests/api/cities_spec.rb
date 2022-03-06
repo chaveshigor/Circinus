@@ -28,4 +28,15 @@ RSpec.describe 'Api::Cities', type: :request do
       expect(response_body['message']).to eq('state dont exists')
     end
   end
+
+  describe 'GET /show' do
+    it 'show the state that the city belongs to' do
+      get "/api/cities/#{city1.id}"
+
+      response_body = JSON.parse(response.body)
+
+      expect(response_body['state']['id']).to eq(state.id)
+      expect(response_body['city']['id']).to eq(city1.id)
+    end
+  end
 end
