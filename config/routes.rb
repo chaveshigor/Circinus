@@ -3,10 +3,11 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :session do
-      # resources :auth
       post 'registration', to: 'registration#create'
+      delete 'registration', to: 'registration#destroy'
       put 'registration/:user_id/:confirmation_token', to: 'registration#confirmate_account'
       post 'auth', to: 'auth#create'
+      #resources :auth
     end
 
     get 'states', to: 'states#index'
