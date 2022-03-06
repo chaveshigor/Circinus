@@ -2,7 +2,7 @@
 
 # User model
 class User < ApplicationRecord
-  before_create :set_hash_pass, :sanitaze
+  before_create :set_hash_pass, :sanitaze, :create_confirmation_account_token
   has_one :profile
   validates :email,
             presence: true,
@@ -27,5 +27,9 @@ class User < ApplicationRecord
     self.email = email.downcase
     self.first_name = first_name.downcase
     self.last_name = last_name.downcase
+  end
+
+  def create_confirmation_account_token
+    self.confirmation_token = SecureRandom.base64(12)
   end
 end
