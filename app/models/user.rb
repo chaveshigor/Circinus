@@ -17,6 +17,10 @@ class User < ApplicationRecord
     "#{first_name.titleize} #{last_name.titleize}"
   end
 
+  def send_user
+    attributes.except('password_digest', 'confirmation_token')
+  end
+
   private
 
   def set_hash_pass
