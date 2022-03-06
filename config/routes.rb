@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   namespace :api do
     get 'states', to: 'states#index'
+    get 'states/:id/cities', to: 'cities#index'
 
     namespace :session do
       # resources :registration
