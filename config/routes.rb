@@ -2,7 +2,13 @@
 
 Rails.application.routes.draw do
   namespace :api do
-    resources :states
+    get 'states', to: 'states#index'
+
+    namespace :session do
+      # resources :registration
+      post 'registration', to: 'registration#create'
+      delete 'registration', to: 'registration#destroy'
+    end
   end
   root 'pages#index'
   get '*path', to: 'pages#index'
