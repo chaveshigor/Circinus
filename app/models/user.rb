@@ -30,6 +30,6 @@ class User < ApplicationRecord
   end
 
   def create_confirmation_account_token
-    self.confirmation_token = SecureRandom.base64(12)
+    self.confirmation_token = SecureRandom.hex(15)
   end
 end
