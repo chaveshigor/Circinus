@@ -9,7 +9,7 @@ class Api::Session::RegistrationController < ApplicationController
     render json: {
       status: 'success',
       message: 'user created',
-      user: @new_user.attributes.except('password_digest', 'confirmation_token')
+      user: @new_user.send_user
     }
   end
 
