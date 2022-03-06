@@ -9,4 +9,11 @@ class Api::CitiesController < ApplicationController
     @cities = state.cities
     render json: { status: 'success', message: 'cities founded', cities: @cities }
   end
+
+  def show
+    city = City.find(params[:id])
+    state = city.state
+
+    render json: { status: 'success', message: 'city founded', city: city, state: state }
+  end
 end
