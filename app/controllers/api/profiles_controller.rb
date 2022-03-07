@@ -5,7 +5,7 @@ class Api::ProfilesController < ApplicationController
     current_user_city = City.find(@current_user.profile.city_id)
     profiles = Profile.where({ city_id: current_user_city.id })
     profiles.delete(@current_user.profile)
-    render json: { status: 'success', profiles: profiles }
+    render json: { status: 'success', profiles: profiles.map(&:send_profile) }
   end
 
   def create
@@ -14,7 +14,11 @@ class Api::ProfilesController < ApplicationController
 
     profile = Profile.new(profile_params)
     profile.user_id = @current_user.id
-    profile.save
+    begin
+      profile.save!
+    rescue ActiveRecord::RecordInvalid => e
+      return render json: { status: 'failed', message: e.message }
+    end
     render json: { status: 'success', profile: profile.send_profile }
   end
 
