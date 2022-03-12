@@ -21,6 +21,17 @@ RSpec.describe 'Api::Profiles', type: :request do
     }
   end
 
+  def update_profile_request(jwt, profile_id, city_id, description)
+    put "/api/profiles/#{profile_id}", headers: { Authorization: jwt }, params: {
+      profile_edit: {
+        description: description,
+      },
+      profile: {
+        city_id: city_id
+      }
+    }
+  end
+
   def index_profiles(jwt)
     get '/api/profiles', headers: { Authorization: jwt }
   end
@@ -75,14 +86,26 @@ RSpec.describe 'Api::Profiles', type: :request do
   end
 
   describe 'GET /index' do
-    it 'show profiles in the same city' do
+    it 'show profiles in the same city, excepted me' do
       prof1 = Profile.create({ born: @born, description: 'I like cats with my S2', city_id: city.id, user_id: user.id })
-      prof2 = Profile.create({ born: @born, description: 'I need to eat some pies', city_id: city.id, user_id: user2.id })
+      prof2 = Profile.create({ born: @born, description: 'I need to eat some pie', city_id: city.id, user_id: user2.id })
+
       index_profiles(@jwt)
       response_body = JSON.parse(response.body)
 
       expect(response_body['profiles'].map { |p| p['id'] }).to eq([prof2.id])
       expect(response_body['profiles'].find { |p| p['id'] == prof1.id }).to be(nil)
+    end
+  end
+
+  describe 'PUT /update' do
+    it 'update a profile description' do
+      prof1 = Profile.create({ born: @born, description: 'I like cats with my S2', city_id: city.id, user_id: user.id })
+      description = 'I will be the god of the new world'
+      update_profile_request(@jwt, prof1.id, city.id, description)
+
+      response_body = JSON.parse(response.body)
+      expect(response_body['status']).to eq('success')
     end
   end
 end
