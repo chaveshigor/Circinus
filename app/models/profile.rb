@@ -2,7 +2,7 @@
 
 class Profile < ApplicationRecord
   belongs_to :user
-  has_one :city
+  belongs_to :city
   validates :description, presence: true, length: { minimum: 16 }
 
   def calculate_age
