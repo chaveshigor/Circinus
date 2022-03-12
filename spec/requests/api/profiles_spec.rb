@@ -60,6 +60,15 @@ RSpec.describe 'Api::Profiles', type: :request do
       expect(response_body['profile'].present?).to be(false)
     end
 
+    it 'return error for try to create a secund profile to an user' do
+      create_profile_request(@jwt, city.id, @born, 'Which Mario? I like Luigge but he dont like me')
+      create_profile_request(@jwt, city.id, @born, 'Which Mario? I like Luigge but he dont like me')
+      response_body = JSON.parse(response.body)
+
+      expect(response_body['status']).to eq('failed')
+      expect(response_body['message']).to eq('profile already exists')
+    end
+
     it 'create a new profile without description' do
       create_profile_request(@jwt, city.id, @born, '')
       response_body = JSON.parse(response.body)

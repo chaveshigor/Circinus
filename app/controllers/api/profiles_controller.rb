@@ -9,6 +9,7 @@ class Api::ProfilesController < ApplicationController
   end
 
   def create
+    return render json: { status: 'failed', message: 'profile already exists' } if Profile.find_by_user_id(@current_user.id).present?
     profile = Profile.new(profile_params)
     profile.user_id = @current_user.id
     begin
