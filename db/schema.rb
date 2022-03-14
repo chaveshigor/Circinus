@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_07_020716) do
+ActiveRecord::Schema.define(version: 2022_03_13_233532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,29 @@ ActiveRecord::Schema.define(version: 2022_03_07_020716) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_cities_on_state_id"
+  end
+
+  create_table "hobbies", force: :cascade do |t|
+    t.string "name"
+    t.bigint "hobby_category_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["hobby_category_id"], name: "index_hobbies_on_hobby_category_id"
+  end
+
+  create_table "hobby_categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "profile_hobbies", force: :cascade do |t|
+    t.bigint "profiles_id", null: false
+    t.bigint "hobbies_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["hobbies_id"], name: "index_profile_hobbies_on_hobbies_id"
+    t.index ["profiles_id"], name: "index_profile_hobbies_on_profiles_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -53,6 +76,9 @@ ActiveRecord::Schema.define(version: 2022_03_07_020716) do
   end
 
   add_foreign_key "cities", "states"
+  add_foreign_key "hobbies", "hobby_categories"
+  add_foreign_key "profile_hobbies", "hobbies", column: "hobbies_id"
+  add_foreign_key "profile_hobbies", "profiles", column: "profiles_id"
   add_foreign_key "profiles", "cities"
   add_foreign_key "profiles", "users"
 end
