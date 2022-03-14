@@ -9,14 +9,16 @@ class Api::ProfilesController < ApplicationController
   end
 
   def create
-    return render json: { status: 'failed', message: 'profile already exists' } if Profile.find_by_user_id(@current_user.id).present?
+    if Profile.find_by_user_id(@current_user.id).present?
+      return render json: { status: 'failed', message: 'profile already exists' }
+    end
+
     profile = Profile.new(profile_params)
     profile.user_id = @current_user.id
-    begin
-      profile.save!
-    rescue ActiveRecord::RecordInvalid => e
-      return render json: { status: 'failed', message: e.message }
-    end
+
+    return render json: { status: 'failed', message: 'erro' } if profile.invalid?
+
+    profile.save
     render json: { status: 'success', profile: profile.send_profile }
   end
 
