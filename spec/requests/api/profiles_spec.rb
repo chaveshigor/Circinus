@@ -49,7 +49,7 @@ RSpec.describe 'Api::Profiles', type: :request do
       expect(response_body['status']).to eq('success')
       expect(response_body['profile'].present?).to be(true)
       expect(response_body['profile']['age']).to eq((Date.today - @born).to_i / 365)
-      expect(Profile.find(response_body['profile']['id']).present?).to be(true)
+      expect(response_body['profile']['id'].present?).to be(true)
     end
 
     it 'create a new profile with short description' do
