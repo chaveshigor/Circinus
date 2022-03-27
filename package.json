@@ -18,7 +18,12 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.16.7",
     "@types/react-router-dom": "^5.3.3",
+    "fork-ts-checker-webpack-plugin": "^7.2.1",
     "webpack-dev-server": "^3"
+  },
+  "scripts": {
+    "dev": "./bin/webpack-dev-server --hot"
   }
 }
