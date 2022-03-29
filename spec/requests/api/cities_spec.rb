@@ -12,8 +12,8 @@ RSpec.describe 'Api::Cities', type: :request do
       it 'show all cities from a state' do
         get "/api/states/#{state.id}/cities"
   
-        response_body = JSON.parse(response.body)
-        cities = response_body['cities']
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
+        cities = response_body.cities
   
         expect(cities.count).to eq(2)
         expect(cities.find { |c| c['id'] == city1.id }.present?).to be(true)
@@ -23,10 +23,10 @@ RSpec.describe 'Api::Cities', type: :request do
       it 'dont show cities from an unexistent state' do
         get '/api/states/99999/cities'
   
-        response_body = JSON.parse(response.body)
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
   
-        expect(response_body['status']).to eq('failed')
-        expect(response_body['message']).to eq('state dont exists')
+        expect(response_body.status).to eq('failed')
+        expect(response_body.message).to eq('state dont exists')
       end
     end
 
@@ -36,11 +36,17 @@ RSpec.describe 'Api::Cities', type: :request do
     context 'When search the state that the city belongs to' do
       it 'show the state' do
         get "/api/cities/#{city1.id}"
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
   
-        response_body = JSON.parse(response.body)
-  
-        expect(response_body['state']['id']).to eq(state.id)
-        expect(response_body['city']['id']).to eq(city1.id)
+        expect(response_body.state.id).to eq(state.id)
+        expect(response_body.city.id).to eq(city1.id)
+      end
+
+      it 'dont show the state of an unexistent city' do
+        get '/api/cities/666'
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
+
+        expect(response_body.status).to eq('failed')
       end
     end
   end
