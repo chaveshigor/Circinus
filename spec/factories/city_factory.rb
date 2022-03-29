@@ -3,6 +3,12 @@
 FactoryBot.define do
   factory :city do
     name { 'Maria' }
+
+    trait :with_state do
+      before(:create) do |city|
+        city.state = create(:state)
+      end
+    end
   end
 end
   
