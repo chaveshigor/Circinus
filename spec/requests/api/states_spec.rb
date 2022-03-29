@@ -8,7 +8,7 @@ RSpec.describe 'Api::States', type: :request do
   let!(:state3) { create(:state, name: 'Kings Landing', uf: 'KL') }
 
   describe 'GET /index' do
-    context 'When get all cities' do
+    context 'When get all states' do
       it 'show all states' do
         get '/api/states'
   
