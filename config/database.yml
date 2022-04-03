@@ -24,7 +24,7 @@ development:
   database: Circinus_development
   username: bigsmoke
   password: grovestreet
-  host: localhost
+  host: db
   port: 5432
 
 test:
