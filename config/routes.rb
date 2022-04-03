@@ -7,8 +7,9 @@ Rails.application.routes.draw do
       delete 'registration', to: 'registration#destroy'
       put 'registration/:user_id/:confirmation_token', to: 'registration#confirmate_account'
       post 'auth', to: 'auth#create'
-      # resources :auth
     end
+
+    resources :hobby_categories, only: %i[index show]
 
     get 'states', to: 'states#index'
     get 'states/:id/cities', to: 'cities#index'
