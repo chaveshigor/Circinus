@@ -9,7 +9,8 @@ class Api::HobbyCategoriesController < ApplicationController
   end
 
   def show
-    hobby_category = HobbyCategory.find(params[:id])
+    hobby_category = HobbyCategory.find(params[:id]) rescue hobby_category = nil
+    return render json: { status: 'failed', message: 'hobby category dont exists' }, status: :not_found if hobby_category.nil?
     render json: { hobby_category: Api::HobbyCategorySerializer.new(hobby_category) }
   end
 end

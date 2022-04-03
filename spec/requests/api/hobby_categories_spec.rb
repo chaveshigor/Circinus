@@ -55,6 +55,15 @@ RSpec.describe 'Api::Profiles', type: :request do
         expect(response.status).to be(200)
         expect(response_body['hobby_category']).to eq(hobby_category_serialized)
       end
+
+      it 'dont show info about an invalid hobby category' do
+        show_hobby_category(@jwt, 'invalid_id')
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
+
+        expect(response.status).to eq(404)
+        expect(response_body.status).to eq('failed')
+        expect(response_body.message).to eq('hobby category dont exists')
+      end
     end
   end
 
