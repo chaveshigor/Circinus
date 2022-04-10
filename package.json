@@ -24,6 +24,8 @@
     "webpack-dev-server": "^3"
   },
   "scripts": {
-    "dev": "./bin/webpack-dev-server --hot"
+    "dev-start": "docker-compose up",
+    "dev": "./bin/webpack-dev-server --hot",
+    "test": "bundle exec rspec"
   }
 }
