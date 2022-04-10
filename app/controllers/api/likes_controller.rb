@@ -9,16 +9,13 @@ class Api::LikesController < ApplicationController
   end
 
   def create
-    create_match if match?(params[:user_receiver_id])
-    new_like = Like.create({user_sender_id: @current_user.id, user_receiver_id: params[:user_receiver_id]})
-    render json: { like: new_like }
+    receiver_id = params[:user_receiver_id].to_i
+
+    new_like = Like.find_or_create_by({user_sender_id: @current_user.id, user_receiver_id: receiver_id})
+    render json: { like: new_like, is_match: match?(receiver_id) }
   end
 
-  private 
-
-  def create_match
-    
-  end
+  private
 
   def match?(receiver_id)
     like = Like.where({user_sender_id: receiver_id, user_receiver_id: @current_user.id})
