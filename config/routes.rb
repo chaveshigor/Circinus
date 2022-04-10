@@ -9,14 +9,17 @@ Rails.application.routes.draw do
       post 'auth', to: 'auth#create'
     end
 
+    resources :profiles
     resources :hobby_categories, only: %i[index show]
 
     get 'states', to: 'states#index'
     get 'states/:id/cities', to: 'cities#index'
     get 'cities/:id', to: 'cities#show'
 
-    resources :profiles
+    get 'likes', to: 'likes#show'
+    post 'likes/:user_receiver_id', to: 'likes#create'
   end
+
   root 'pages#index'
   get '*path', to: 'pages#index'
 end
