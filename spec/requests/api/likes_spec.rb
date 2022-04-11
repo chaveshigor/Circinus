@@ -29,31 +29,36 @@ RSpec.describe 'Api::Likes', type: :request do
 
   describe 'POST /create' do
     context 'When user try to like another user' do
-      it 'create a new like but its not a match' do
-        expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(1)
-        response_body = JSON.parse(response.body, object_class: OpenStruct)
-
-        expect(response_body.is_match).to eq(false)
-        expect(response_body.liked_user.id).to eq(user_receiver.id)
-      end
-
-      it 'create a new like and it is a match' do
-        Like.create(user_receiver_id: user_sender.id, user_sender_id: user_receiver.id)
-
-        expect{ create_like_request(@jwt, user_receiver.id) }.to change(Match, :count).by(1)
-        response_body = JSON.parse(response.body, object_class: OpenStruct)
-
-        expect(response_body.is_match).to eq(true)
-        expect(response_body.liked_user.id).to eq(user_receiver.id)
-      end
-
-      it 'not like the same user twice' do
-        Like.create(user_receiver_id: user_receiver.id, user_sender_id: user_sender.id)
-
-        expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(0)
-        response_body = JSON.parse(response.body, object_class: OpenStruct)
+      context 'when it is not a match' do
+        it 'create a new like' do
+          expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(1)
+          response_body = JSON.parse(response.body, object_class: OpenStruct)
+  
+          expect(response_body.is_match).to eq(false)
+          expect(response_body.liked_user.id).to eq(user_receiver.id)
+        end
         
-        expect(response_body.liked_user.id).to eq(user_receiver.id)
+        it 'not like the same user twice' do
+          Like.create(user_receiver_id: user_receiver.id, user_sender_id: user_sender.id)
+  
+          expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(0)
+          response_body = JSON.parse(response.body, object_class: OpenStruct)
+          
+          expect(response_body.is_match).to eq(false)
+          expect(response_body.liked_user.id).to eq(user_receiver.id)
+        end
+      end
+
+      context 'when its a match' do
+        it 'delete received like and create the match' do
+          Like.create(user_receiver_id: user_sender.id, user_sender_id: user_receiver.id)
+  
+          expect{ create_like_request(@jwt, user_receiver.id) }.to change(Match, :count).by(1)
+          response_body = JSON.parse(response.body, object_class: OpenStruct)
+  
+          expect(response_body.is_match).to eq(true)
+          expect(response_body.liked_user.id).to eq(user_receiver.id)
+        end
       end
     end
   end
