@@ -16,8 +16,8 @@ Rails.application.routes.draw do
     get 'states/:id/cities', to: 'cities#index'
     get 'cities/:id', to: 'cities#show'
 
-    get 'likes', to: 'likes#show'
-    post 'likes/:user_receiver_id', to: 'likes#create'
+    resources :likes, only: %i[index create]
+    resources :matches, only: %i[index create]
   end
 
   root 'pages#index'
