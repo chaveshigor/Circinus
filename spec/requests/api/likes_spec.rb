@@ -12,7 +12,11 @@ RSpec.describe 'Api::Likes', type: :request do
   let!(:user_example) { create(:user, first_name: 'Levi', last_name: 'Ackerman') }
 
   def create_like_request(jwt, user_receiver_id)
-    post "/api/likes/#{user_receiver_id}", headers: { Authorization: jwt }
+    post '/api/likes/', 
+    params: { 
+      like: {user_receiver_id: user_receiver_id }
+    }, 
+    headers: { Authorization: jwt }
   end
 
   def get_likes_requests(jwt=@jwt)
@@ -55,15 +59,17 @@ RSpec.describe 'Api::Likes', type: :request do
         expect(response_body.like.user_receiver_id).to eq(user_receiver.id)
       end
     end
-    
+  end
+  
+  describe 'GET /show' do
     context 'When user try to see all likes received' do
       it 'show all likes' do
         Like.create(user_receiver_id: user_sender.id, user_sender_id: user_receiver.id)
         Like.create(user_receiver_id: user_sender.id, user_sender_id: user_example.id)
-
+  
         get_likes_requests
         response_body = JSON.parse(response.body, object_class: OpenStruct)
-
+  
         expect(response_body.likes.count).to eq(2)
         expect(response_body.likes).to match(JSON.parse(Like.all.to_json, object_class: OpenStruct))
       end
