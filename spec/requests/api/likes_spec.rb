@@ -34,19 +34,17 @@ RSpec.describe 'Api::Likes', type: :request do
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
         expect(response_body.is_match).to eq(false)
-        expect(response_body.like.user_sender_id).to eq(user_sender.id)
-        expect(response_body.like.user_receiver_id).to eq(user_receiver.id)
+        expect(response_body.liked_user.id).to eq(user_receiver.id)
       end
 
       it 'create a new like and it is a match' do
         Like.create(user_receiver_id: user_sender.id, user_sender_id: user_receiver.id)
 
-        expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(1)
+        expect{ create_like_request(@jwt, user_receiver.id) }.to change(Match, :count).by(1)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
         expect(response_body.is_match).to eq(true)
-        expect(response_body.like.user_sender_id).to eq(user_sender.id)
-        expect(response_body.like.user_receiver_id).to eq(user_receiver.id)
+        expect(response_body.liked_user.id).to eq(user_receiver.id)
       end
 
       it 'not like the same user twice' do
@@ -55,8 +53,7 @@ RSpec.describe 'Api::Likes', type: :request do
         expect{ create_like_request(@jwt, user_receiver.id) }.to change(Like, :count).by(0)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
         
-        expect(response_body.like.user_sender_id).to eq(user_sender.id)
-        expect(response_body.like.user_receiver_id).to eq(user_receiver.id)
+        expect(response_body.liked_user.id).to eq(user_receiver.id)
       end
     end
   end
