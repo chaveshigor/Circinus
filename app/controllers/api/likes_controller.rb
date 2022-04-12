@@ -24,13 +24,12 @@ class Api::LikesController < ApplicationController
   private
 
   def create_match(receiver_id)
-    Match.create!({profile_1_id: @current_user.profile.id, profile_2_id: receiver_id})
+    Match.create({profile_1_id: @current_user.profile.id, profile_2_id: receiver_id})
     Like.find_by({profile_sender_id: receiver_id, profile_receiver_id: @current_user.profile.id}).destroy
   end
 
   def match?(receiver_id)
-    like = Like.where({profile_sender_id: receiver_id, profile_receiver_id: @current_user.profile.id})
-    like.present?
+    Like.where({profile_sender_id: receiver_id, profile_receiver_id: @current_user.profile.id}).present?
   end
 
   def like_params
