@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_13_233532) do
+ActiveRecord::Schema.define(version: 2022_04_10_184006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,24 @@ ActiveRecord::Schema.define(version: 2022_03_13_233532) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "profile_sender_id"
+    t.bigint "profile_receiver_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_receiver_id"], name: "index_likes_on_profile_receiver_id"
+    t.index ["profile_sender_id"], name: "index_likes_on_profile_sender_id"
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.bigint "profile_1_id"
+    t.bigint "profile_2_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_1_id"], name: "index_matches_on_profile_1_id"
+    t.index ["profile_2_id"], name: "index_matches_on_profile_2_id"
   end
 
   create_table "profile_hobbies", force: :cascade do |t|
@@ -77,6 +95,10 @@ ActiveRecord::Schema.define(version: 2022_03_13_233532) do
 
   add_foreign_key "cities", "states"
   add_foreign_key "hobbies", "hobby_categories"
+  add_foreign_key "likes", "profiles", column: "profile_receiver_id"
+  add_foreign_key "likes", "profiles", column: "profile_sender_id"
+  add_foreign_key "matches", "profiles", column: "profile_1_id"
+  add_foreign_key "matches", "profiles", column: "profile_2_id"
   add_foreign_key "profile_hobbies", "hobbies", column: "hobbies_id"
   add_foreign_key "profile_hobbies", "profiles", column: "profiles_id"
   add_foreign_key "profiles", "cities"
