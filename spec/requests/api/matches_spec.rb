@@ -20,11 +20,11 @@ RSpec.describe 'Api::Matches', type: :request do
   end
 
   describe 'GET /index' do
-    context "When user try to list their matches" do
-      it 'create a new match' do
+    context 'When user try to list their matches' do
+      it 'return all matches' do
         Match.create(profile_1_id: profile_receiver.id, profile_2_id: profile_sender.id)
         Match.create(profile_1_id: profile_sender.id, profile_2_id: profile_example.id)
-
+        
         get_matches_request
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
@@ -32,6 +32,6 @@ RSpec.describe 'Api::Matches', type: :request do
         expect(response_body.matches.to_json).to include(profile_receiver.to_json)
         expect(response_body.matches.to_json).to include(profile_example.to_json)
       end
-    end 
+    end
   end
 end
