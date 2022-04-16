@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::States', type: :request do
+  let!(:state) { create(:state) }
+  let!(:city) { create(:city, state: state) }
   let!(:user) { create(:user) }
 
   def create_user_request
@@ -12,6 +14,11 @@ RSpec.describe 'Api::States', type: :request do
         last_name: 'goku',
         email: 'son_goku@example.com',
         password_digest: '12345678'
+      },
+      new_profile: { 
+        born: Date.new(1996, 10, 25),
+        description: 'I like hot dogs S2',
+        city_id: city.id,
       }
     }
   end
@@ -29,24 +36,25 @@ RSpec.describe 'Api::States', type: :request do
   end
 
   describe 'POST /create' do
-    it 'create a new user' do
-      create_user_request
-      new_user = JSON.parse(response.body)
+    context 'When user create an account' do
+      it 'create a new user and a new profile' do
+        expect{ create_user_request }.to change(User, :count).by(1).and change(Profile, :count).by(1)
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-      expect(new_user['status']).to eq('success')
-      expect(new_user['message']).to eq('user created')
+        expect(response.status).to eq(201)
+        expect(response_body.user.present?).to be(true)
+        expect(response_body.profile.present?).to be(true)
+      end
+   
+      it 'not create a user with an existent email' do
+        create_user_request
 
-      new_user = User.find(new_user['user']['id'])
-      expect(new_user.confirmation_token.present?).to be(true)
-    end
+        expect{ create_user_request }.to change(User, :count).by(0).and change(Profile, :count).by(0)
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-    it 'not create a user with an existent email' do
-      create_user_request
-      create_user_request
-      new_user = JSON.parse(response.body)
-
-      expect(new_user['status']).to eq('failed')
-      expect(new_user['message']).to eq('user already exists')
+        expect(response.status).to eq(403)
+        expect(response_body.message).to eq('user already exists')
+      end
     end
   end
 
