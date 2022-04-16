@@ -2,7 +2,7 @@
 
 class Api::Session::RegistrationController < ApplicationController
   skip_before_action :verify_authenticity_token
-  #before_action :authorize_request, only: %i[destroy, confirmate_account]
+  before_action :authorize_request, only: %i[destroy confirmate_account]
 
   def create
     user = User.find_by_email(new_user_params[:email])
@@ -15,11 +15,13 @@ class Api::Session::RegistrationController < ApplicationController
   end
 
   def destroy
-    @user = User.find(destroy_user_params[:id]) rescue @user = nil
-    return render json: { status: 'failed', message: 'user dont exists' } if @user.nil?
-    return render json: { status: 'success', message: 'user deleted' } if @user.destroy
+    user = @current_user
+    profile = user.profile
 
-    render json: { status: 'failed', message: 'unexpected error' }
+    profile.destroy
+    user.destroy
+
+    render json: { }, status: 204
   end
 
   def confirmate_account

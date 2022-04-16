@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/utils/auth_user'
 
 RSpec.describe 'Api::States', type: :request do
   let!(:state) { create(:state) }
   let!(:city) { create(:city, state: state) }
+
   let!(:user) { create(:user) }
+  let!(:profile) { create(:profile, user: user, city: city) }
 
   def create_user_request
     post '/api/session/registration', params: {
@@ -23,20 +26,20 @@ RSpec.describe 'Api::States', type: :request do
     }
   end
 
-  def delete_user_request(id)
-    delete '/api/session/registration', params: {
-      user_to_delete: {
-        id: id
-      }
-    }
+  def delete_user_request(jwt=@jwt)
+    delete '/api/session/registration', headers: { Authorization: jwt }
   end
 
   def confirmate_account_request(user_id, confirmation_token)
     put "/api/session/registration/#{user_id}/#{confirmation_token}"
   end
 
+  before(:each) do
+    @jwt = auth_user_request(user.email, 'P4ssW02d!')['jwt']
+  end
+
   describe 'POST /create' do
-    context 'When user create an account' do
+    context 'When user try to create an account' do
       it 'create a new user and a new profile' do
         expect{ create_user_request }.to change(User, :count).by(1).and change(Profile, :count).by(1)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
@@ -59,19 +62,12 @@ RSpec.describe 'Api::States', type: :request do
   end
 
   describe 'DELETE /destroy' do
-    it 'delete an user' do
-      delete_user_request(user.id)
-      response_body = JSON.parse(response.body)
+    context 'When user try to delete his account' do
+      it 'delete an user and his profile' do
+        expect{ delete_user_request }.to change(User, :count).by(-1).and change(Profile, :count).by(-1)
 
-      expect(response_body['status']).to eq('success')
-    end
-
-    it 'try to delete an unexistent user' do
-      delete_user_request(999_999)
-      response_body = JSON.parse(response.body)
-
-      expect(response_body['status']).to eq('failed')
-      expect(response_body['message']).to eq('user dont exists')
+        expect(response.status).to eq(204)
+      end
     end
   end
 
