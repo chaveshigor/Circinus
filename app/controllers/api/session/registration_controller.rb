@@ -2,7 +2,7 @@
 
 class Api::Session::RegistrationController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request, only: %i[destroy confirmate_account]
+  before_action :authorize_request, only: %i[destroy]
 
   def create
     user = User.find_by_email(new_user_params[:email])
@@ -26,15 +26,13 @@ class Api::Session::RegistrationController < ApplicationController
 
   def confirmate_account
     user = User.find(params[:user_id]) rescue user = nil
-    return render json: { status: 'failed', message: 'user not found' } if user.nil?
-    return render json: { status: 'failed', message: 'wrong token' } if user.confirmation_token != params[:confirmation_token]
+    return render json: { message: 'user not found' }, status: :not_found if user.nil?
+    return render json: { message: 'wrong token' }, status: :unauthorized if user.confirmation_token != params[:confirmation_token]
 
     user.account_confirmed = true if user.confirmation_token == params[:confirmation_token]
     user.save if user.confirmation_token == params[:confirmation_token]
 
     render json: {
-      status: 'success',
-      message: 'account confirmed',
       user: user.attributes.except('password_digest', 'confirmation_token')
     }
   end
@@ -56,9 +54,5 @@ class Api::Session::RegistrationController < ApplicationController
   def new_user_params
     params.require(:new_user)
           .permit(:first_name, :last_name, :email, :password_digest)
-  end
-
-  def destroy_user_params
-    params.require(:user_to_delete).permit(:id)
   end
 end
