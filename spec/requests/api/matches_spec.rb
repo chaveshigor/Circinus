@@ -15,6 +15,10 @@ RSpec.describe 'Api::Matches', type: :request do
     get '/api/matches', headers: { Authorization: jwt }
   end
 
+  def delete_match_request(match_id, jwt=@jwt)
+    delete "/api/matches/#{match_id}", headers: { Authorization: jwt }
+  end
+
   before(:each) do
     @jwt = auth_user_request(profile_sender.user.email, 'P4ssW02d!')['jwt']
   end
@@ -31,6 +35,22 @@ RSpec.describe 'Api::Matches', type: :request do
         expect(response_body.matches.count).to eq(2)
         expect(response_body.matches.to_json).to include(profile_receiver.to_json)
         expect(response_body.matches.to_json).to include(profile_example.to_json)
+      end
+    end
+  end
+
+  describe 'DELETE /destroy' do
+    context 'When user try to delete a match' do
+      it 'delete the match' do
+        match = Match.create(profile_1_id: profile_receiver.id, profile_2_id: profile_sender.id)
+
+        expect{ delete_match_request(match.id) }.to change { Match.count }.by(-1)
+        expect(response.status).to eq(204)
+      end
+
+      it 'does not delete an nonexistent match' do
+        expect{ delete_match_request('99999') }.to change { Match.count }.by(0)
+        expect(response.status).to eq(404)
       end
     end
   end

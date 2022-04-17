@@ -19,6 +19,12 @@ class Api::MatchesController < ApplicationController
   end
 
   def destroy
+    match_id = params[:id]
 
+    match = Match.find(match_id) rescue match = nil
+    return render json: { }, status: :not_found if match.nil?
+
+    match.destroy
+    render json: { }, status: 204
   end
 end
