@@ -72,31 +72,31 @@ RSpec.describe 'Api::States', type: :request do
   end
 
   describe 'PUT /confirmate_account' do
-    it 'confirm account' do
-      confirmate_account_request(user.id, user.confirmation_token)
-      response_body = JSON.parse(response.body)
+    context 'When user try to confirm his account' do
+      it 'confirm account' do
+        confirmate_account_request(user.id, user.confirmation_token)
+        response_body = JSON.parse(response.body)
 
-      expect(response_body['status']).to eq('success')
-      expect(response_body['message']).to eq('account confirmed')
-      expect(User.find(user.id).account_confirmed).to be(true)
-    end
+        expect(User.find(user.id).account_confirmed).to be(true)
+      end
 
-    it 'not confirm account - wrong token' do
-      confirmate_account_request(user.id, 'kamehameha')
-      response_body = JSON.parse(response.body)
+      it 'not confirm account - wrong token' do
+        confirmate_account_request(user.id, 'kamehameha')
+        response_body = JSON.parse(response.body)
 
-      expect(response_body['status']).to eq('failed')
-      expect(response_body['message']).to eq('wrong token')
-      expect(User.find(user.id).account_confirmed).to be(false)
-    end
+        expect(response.status).to eq(401)
+        expect(response_body['message']).to eq('wrong token')
+        expect(User.find(user.id).account_confirmed).to be(false)
+      end
 
-    it 'not confirm account - user dont exists' do
-      confirmate_account_request(9999, user.confirmation_token)
-      response_body = JSON.parse(response.body)
+      it 'not confirm account - user dont exists' do
+        confirmate_account_request(9999, user.confirmation_token)
+        response_body = JSON.parse(response.body)
 
-      expect(response_body['status']).to eq('failed')
-      expect(response_body['message']).to eq('user not found')
-      expect(User.find(user.id).account_confirmed).to be(false)
+        expect(response.status).to eq(404)
+        expect(response_body['message']).to eq('user not found')
+        expect(User.find(user.id).account_confirmed).to be(false)
+      end
     end
   end
 end
