@@ -37,13 +37,13 @@ RSpec.describe 'Api::Likes', type: :request do
           expect(response_body.is_match).to eq(false)
           expect(response_body.liked_profile.id).to eq(profile_receiver.id)
         end
-        
+
         it 'not like the same user twice' do
           Like.create(profile_receiver_id: profile_receiver.id, profile_sender_id: profile_sender.id)
-  
+
           expect{ create_like_request(@jwt, profile_receiver.id) }.to change(Like, :count).by(0)
           response_body = JSON.parse(response.body, object_class: OpenStruct)
-          
+
           expect(response_body.is_match).to eq(false)
           expect(response_body.liked_profile.id).to eq(profile_receiver.id)
         end
