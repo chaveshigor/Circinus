@@ -1,4 +1,4 @@
-class Api::ProfilesController < ApplicationController
+class Api::ProfilesController < Api::ApiController
   before_action :authorize_request
   before_action :check_city, only: %i[create update]
 

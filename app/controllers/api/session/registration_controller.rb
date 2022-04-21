@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::Session::RegistrationController < ApplicationController
+class Api::Session::RegistrationController < Api::ApiController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[destroy]
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::Session::AuthController < ApplicationController
+class Api::Session::AuthController < Api::ApiController
   def create
     user = User.find_by_email(auth_user_params[:email]) rescue user = nil
     return render json: { status: 'failed', message: 'authentication failed' } if user.nil?

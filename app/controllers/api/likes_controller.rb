@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::LikesController < ApplicationController
+class Api::LikesController < Api::ApiController
   before_action :authorize_request
 
   def index

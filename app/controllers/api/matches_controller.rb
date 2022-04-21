@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::MatchesController < ApplicationController
+class Api::MatchesController < Api::ApiController
   before_action :authorize_request
 
   def index

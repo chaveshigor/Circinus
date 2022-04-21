@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 
-class Api::CitiesController < ApplicationController
+class Api::CitiesController < Api::ApiController
   def index
     state = State.find(params[:id]) rescue state = nil
     return render json: { status: 'failed', message: 'state dont exists' } if state.nil?

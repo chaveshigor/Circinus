@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::HobbyCategoriesController < ApplicationController
+class Api::HobbyCategoriesController < Api::ApiController
   before_action :authorize_request
 
   def index
