@@ -6,7 +6,7 @@ class Api::Session::RegistrationController < Api::ApiController
 
   def create
     user = User.find_by_email(new_user_params[:email])
-    return render json: { message: 'user already exists' }, status: :forbidden if user.present?
+    return forbidden_request('user already exists') if user.present?
 
     new_user = User.create(new_user_params)
     new_profile = create_profile(new_user, new_profile_params)
@@ -26,11 +26,14 @@ class Api::Session::RegistrationController < Api::ApiController
 
   def confirmate_account
     user = User.find(params[:user_id]) rescue user = nil
-    return render json: { message: 'user not found' }, status: :not_found if user.nil?
-    return render json: { message: 'wrong token' }, status: :unauthorized if user.confirmation_token != params[:confirmation_token]
 
-    user.account_confirmed = true if user.confirmation_token == params[:confirmation_token]
-    user.save if user.confirmation_token == params[:confirmation_token]
+    return not_found_request('user not found') if user.nil?
+    return unauthorized_request('wrong token') if user.confirmation_token != params[:confirmation_token]
+
+    if user.confirmation_token == params[:confirmation_token]
+      user.account_confirmed = true
+      user.save
+    end
 
     render json: {
       user: user.attributes.except('password_digest', 'confirmation_token')

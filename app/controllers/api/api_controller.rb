@@ -8,9 +8,9 @@ class Api::ApiController < ApplicationController
       @decoded = JsonWebToken.decode(token)
       @current_user = User.find(@decoded[:data])
     rescue ActiveRecord::RecordNotFound => e
-      render json: { status: 'unauthorized', message: e.message }, status: :unauthorized
+      unauthorized_request(e.message)
     rescue JWT::DecodeError => e
-      render json: { status: 'unauthorized', message: e.message }, status: :unauthorized
+      unauthorized_request(e.message)
     end
   end
 
@@ -18,11 +18,11 @@ class Api::ApiController < ApplicationController
     render json: { status: 'unauthorized', message: message }, status: :unauthorized
   end
 
-  def not_found(message='entity not found')
+  def not_found_request(message='entity not found')
     render json: { status: 'not found', message: message }, status: :not_found
   end
 
-  def forbidden(message='forbidden access')
+  def forbidden_request(message='forbidden access')
     render json: { status: 'forbidden', message: message }, status: :forbidden
   end
 end
