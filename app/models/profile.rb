@@ -3,6 +3,7 @@
 class Profile < ApplicationRecord
   belongs_to :user
   belongs_to :city
+  has_many :pictures
   has_many :profile_hobbies
   has_many :hobbies, through: :profile_hobbies
   validates :description, presence: true, length: { minimum: 16 }
