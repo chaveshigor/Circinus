@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-p ENV['AWS_ACCESS_KEY_ID']
 CarrierWave.configure do |config|
   config.fog_credentials = {
     provider:              'AWS',                         # required
