@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Api::Session::RegistrationController < Api::ApiController
-  skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[destroy]
 
   def create
@@ -10,7 +9,8 @@ class Api::Session::RegistrationController < Api::ApiController
 
     new_user = User.create(new_user_params)
     new_profile = create_profile(new_user, new_profile_params)
-    new_pictures = upload_pictures(params[:picture], new_profile) if params[:picture].present?
+
+    ProfileImages::AddPicturesService.new(params[:add_pictures], new_profile).run if params[:add_pictures].present?
 
     render json: { user: new_user.send_user, profile: Api::ProfileSerializer.new(new_profile).serializable_hash[:data][:attributes]}, status: :created
   end
@@ -58,18 +58,5 @@ class Api::Session::RegistrationController < Api::ApiController
   def new_user_params
     params.require(:new_user)
           .permit(:first_name, :last_name, :email, :password_digest)
-  end
-
-  def upload_pictures(pictures, profile)
-    new_pictures = []
-    counter = 0
-
-    pictures.each do |picture|
-      url = Image::UploadImageService.new(picture[1].tempfile).run
-      new_pictures << Picture.create({url: url, position: counter, profile_id: profile.id})
-      counter += 1
-    end
-
-    new_pictures
   end
 end
