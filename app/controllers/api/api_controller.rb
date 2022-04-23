@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::ApiController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def authorize_request
     header = request.headers['Authorization']
     token = header.split(' ').last if header
