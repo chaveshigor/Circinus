@@ -16,6 +16,6 @@ class Image::UploadImageService < ApplicationService
   def uploadImage
     uploader = PictureUploader.new
     uploader.store!(image)
-    uploader.url
+    uploader
   end
 end
