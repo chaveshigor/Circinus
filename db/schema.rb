@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_10_184006) do
+ActiveRecord::Schema.define(version: 2022_04_23_014725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,16 @@ ActiveRecord::Schema.define(version: 2022_04_10_184006) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["profile_1_id"], name: "index_matches_on_profile_1_id"
     t.index ["profile_2_id"], name: "index_matches_on_profile_2_id"
+  end
+
+  create_table "pictures", force: :cascade do |t|
+    t.string "url"
+    t.integer "position"
+    t.bigint "profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "picture_s3"
+    t.index ["profile_id"], name: "index_pictures_on_profile_id"
   end
 
   create_table "profile_hobbies", force: :cascade do |t|
@@ -99,6 +109,7 @@ ActiveRecord::Schema.define(version: 2022_04_10_184006) do
   add_foreign_key "likes", "profiles", column: "profile_sender_id"
   add_foreign_key "matches", "profiles", column: "profile_1_id"
   add_foreign_key "matches", "profiles", column: "profile_2_id"
+  add_foreign_key "pictures", "profiles"
   add_foreign_key "profile_hobbies", "hobbies", column: "hobbies_id"
   add_foreign_key "profile_hobbies", "profiles", column: "profiles_id"
   add_foreign_key "profiles", "cities"
