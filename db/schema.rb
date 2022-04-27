@@ -66,12 +66,12 @@ ActiveRecord::Schema.define(version: 2022_04_23_014725) do
   end
 
   create_table "profile_hobbies", force: :cascade do |t|
-    t.bigint "profiles_id", null: false
-    t.bigint "hobbies_id", null: false
+    t.bigint "profile_id", null: false
+    t.bigint "hobby_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["hobbies_id"], name: "index_profile_hobbies_on_hobbies_id"
-    t.index ["profiles_id"], name: "index_profile_hobbies_on_profiles_id"
+    t.index ["hobby_id"], name: "index_profile_hobbies_on_hobby_id"
+    t.index ["profile_id"], name: "index_profile_hobbies_on_profile_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -110,8 +110,8 @@ ActiveRecord::Schema.define(version: 2022_04_23_014725) do
   add_foreign_key "matches", "profiles", column: "profile_1_id"
   add_foreign_key "matches", "profiles", column: "profile_2_id"
   add_foreign_key "pictures", "profiles"
-  add_foreign_key "profile_hobbies", "hobbies", column: "hobbies_id"
-  add_foreign_key "profile_hobbies", "profiles", column: "profiles_id"
+  add_foreign_key "profile_hobbies", "hobbies"
+  add_foreign_key "profile_hobbies", "profiles"
   add_foreign_key "profiles", "cities"
   add_foreign_key "profiles", "users"
 end
