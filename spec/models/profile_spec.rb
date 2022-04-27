@@ -7,32 +7,29 @@ RSpec.describe Profile, type: :model do
   let!(:city) { create(:city, state: state) }
   let!(:user) { create(:user) }
 
-  before(:each) do
-    @born = Date.new(1996, 10, 25)
-    @fake_profile = {
-      description: 'Rasengan is the best jutsu',
-      born: @born,
-      city_id: city.id,
-      user_id: user.id
-    }
+  describe 'Assossiations' do
+    it { should belong_to(:user) }
+    it { should belong_to(:city) }
+    it { should have_many(:pictures) }
+    it { should have_many(:profile_hobbies) }
+  end
+
+  describe "Validations" do
+    it { should validate_presence_of(:user) }
+    it { should validate_presence_of(:city) }
+    it { should validate_length_of(:description) }
   end
 
   it 'create a new profile' do
-    prof = Profile.new(@fake_profile)
+    born_date = Date.new(1996, 10, 25)
+    prof = Profile.new({
+      description: 'Rasengan is the best jutsu',
+      born: born_date,
+      city_id: city.id,
+      user_id: user.id
+    })
+
     expect(prof).to be_valid
-    expect(prof.send_profile['full_name']).to eq(user.full_name)
-    expect(prof.calculate_age).to be((Date.today - @born).to_i / 365)
-  end
-
-  it 'try to create a profile with short description' do
-    @fake_profile[:description] = 'Hulk smash'
-    prof = Profile.new(@fake_profile)
-    expect(prof).to be_invalid
-  end
-
-  it 'try to create a profile without description' do
-    @fake_profile[:description] = ''
-    prof = Profile.new(@fake_profile)
-    expect(prof).to be_invalid
+    expect(prof.calculate_age).to be((Date.today - born_date).to_i / 365)
   end
 end
