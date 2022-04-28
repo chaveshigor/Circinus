@@ -17,7 +17,7 @@ RSpec.describe Profile, type: :model do
   describe "Validations" do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:city) }
-    it { should validate_length_of(:description) }
+    it { should validate_length_of(:description).is_at_least(16) }
   end
 
   it 'create a new profile' do

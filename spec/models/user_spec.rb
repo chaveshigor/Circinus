@@ -3,50 +3,41 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  before(:each) do
-    @fake_user = {
+
+  describe 'Assossiations' do
+    it { should have_one(:profile) }
+  end
+
+  describe "Validations" do
+    subject { User.new({
       email: 'me@example.com',
       password_digest: 'P@ssW0rd',
       first_name: 'eren',
       last_name: 'yeager'
-    }
+    }) }
+
+    it { should validate_presence_of(:email) }
+    it { should validate_uniqueness_of(:email) }
+
+    it { should validate_presence_of(:password_digest) }
+    it { should validate_length_of(:password_digest).is_at_least(8) }
+
+    it { should validate_presence_of(:first_name) }
+    it { should validate_length_of(:first_name).is_at_least(2) }
+
+    it { should validate_presence_of(:last_name) }
+    it { should validate_length_of(:last_name).is_at_least(2) }
   end
 
-  it 'is a valid user' do
-    new_user = User.new(@fake_user)
-    expect(new_user).to be_valid
-    expect(new_user.full_name).to eq("#{@fake_user[:first_name].titleize} #{@fake_user[:last_name].titleize}")
-  end
+  it 'create a new user' do
+    user = User.new({
+      email: 'me@example.com',
+      password_digest: 'P@ssW0rd',
+      first_name: 'eren',
+      last_name: 'yeager'
+    })
 
-  it 'is an user with invalid email' do
-    @fake_user[:email] = 'me!@example.com'
-    expect(User.new(@fake_user)).to be_invalid
-  end
-
-  it 'is an user with invalid first name' do
-    @fake_user[:first_name] = 'L'
-    expect(User.new(@fake_user)).to be_invalid
-  end
-
-  it 'is an user with invalid last name' do
-    @fake_user[:last_name] = 'N'
-    expect(User.new(@fake_user)).to be_invalid
-  end
-
-  it 'is an user with invalid password' do
-    @fake_user[:password_digest] = 'me'
-    expect(User.new(@fake_user)).to be_invalid
-  end
-
-  it 'is an user with invalid email and password' do
-    @fake_user[:email] = 'ruyk!!!@example.com'
-    @fake_user[:password_digest] = 'apple'
-    expect(User.new(@fake_user)).to be_invalid
-  end
-
-  it 'is a invalid user without email and password' do
-    @fake_user[:email] = ''
-    @fake_user[:password_digest] = ''
-    expect(User.new(@fake_user)).to be_invalid
+    expect(user).to be_valid
+    expect(user.full_name).to eq('Eren Yeager')
   end
 end
