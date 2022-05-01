@@ -6,7 +6,13 @@ class Api::ProfilesController < Api::ApiController
     current_user_city = City.find(@current_user.profile.city_id)
     profiles = Profile.where({ city_id: current_user_city.id }).where.not({ user_id: @current_user.id })
 
-    render json: { status: 'success', profiles: Api::ProfileSerializer.new(profiles).serializable_hash }
+    profiles.each do |profile|
+      profile.pictures.each do |picture|
+        picture.url = S3::ShowService.new(picture.storage_service_key).run
+      end
+    end
+
+    render json: Api::ProfileSerializer.new(profiles)
   end
 
   def update
@@ -17,11 +23,12 @@ class Api::ProfilesController < Api::ApiController
       ProfileImages::AddPicturesService.new(params[:add_pictures], profile).run if params[:add_pictures].present?
       ProfileImages::DestroyPicturesService.new(params[:destroy_pictures]).run  if params[:destroy_pictures].present?
       ProfileImages::MovePicturesService.new(params[:move_pictures]).run        if params[:move_pictures].present?
-    rescue ActiveRecord::RecordNotFound => e
+
+    rescue ActiveRecord::RecordNotFound, StandardError => e
       return not_found_request(e.message)
     end
 
-    render json: { status: 'success', profile: Api::ProfileSerializer.new(profile).serializable_hash[:data][:attributes] }
+    render json: Api::ProfileSerializer.new(profile)
   end
 
   private
