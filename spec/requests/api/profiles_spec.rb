@@ -49,8 +49,8 @@ RSpec.describe 'Api::Profiles', type: :request do
         index_profiles(@jwt)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-        expect(response_body.profiles.data.map { |p| p['id'].to_i }).to eq([prof2.id])
-        expect(response_body.profiles.data.find { |p| p['id'].to_i == prof1.id }).to be(nil)
+        expect(response_body.data.map { |p| p['id'].to_i }).to eq([prof2.id])
+        expect(response_body.data.find { |p| p['id'].to_i == prof1.id }).to be(nil)
       end
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe 'Api::Profiles', type: :request do
         update_profile_request(@jwt, prof1.id, city.id, description)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-        expect(response_body.status).to eq('success')
+        expect(response.status).to eq(200)
       end
     end
   end
