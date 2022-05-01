@@ -5,7 +5,7 @@ class Api::MatchesController < Api::ApiController
 
   def index
     current_profile_id = @current_user.profile.id
-    match_profiles_ids = Match.select('profile_1_id', 'profile_2_id').where(profile_1_id: current_profile_id).or(Match.where(profile_2_id: current_profile_id))
+    match_profiles_ids = Match.profile_matches(current_profile_id)
     matches = []
     match_profiles_ids.each do |match_profile|
       if match_profile.profile_1_id != current_profile_id
