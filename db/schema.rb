@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_23_014725) do
+ActiveRecord::Schema.define(version: 2022_04_21_031051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,12 +56,11 @@ ActiveRecord::Schema.define(version: 2022_04_23_014725) do
   end
 
   create_table "pictures", force: :cascade do |t|
-    t.string "url"
+    t.string "storage_service_key"
     t.integer "position"
     t.bigint "profile_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "picture_s3"
     t.index ["profile_id"], name: "index_pictures_on_profile_id"
   end
 
