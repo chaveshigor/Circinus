@@ -21,9 +21,11 @@ class ProfileImages::AddPicturesService < ApplicationService
       picture_file = picture[1]['file']
       picture_position = picture[1]['position']
 
-      picture = Image::UploadImageService.new(picture_file.tempfile).run
+      extention = File.extname(picture_file.tempfile.path)
+      raise StandardError, 'Extension not allowed' unless Picture.allowed_extentions.include?(extention)
 
-      new_pictures << Picture.create({url: picture.url, position: picture_position, profile_id: profile.id, picture_s3: picture})
+      s3_key = S3::UploadService.new(picture_file.tempfile.path).run
+      new_pictures << Picture.create({storage_service_key: s3_key, position: picture_position, profile_id: profile.id})
     end
 
     new_pictures

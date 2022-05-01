@@ -19,8 +19,7 @@ class ProfileImages::DestroyPicturesService < ApplicationService
 
       deleted_picture = Picture.find(picture_id)
 
-      deleted_picture.remove_picture_s3!
-      deleted_picture.save!
+      S3::DeleteService.new(deleted_picture.storage_service_key).run
       deleted_picture.destroy
     end
   end
