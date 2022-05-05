@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class S3::UploadService < ApplicationService
-  def initialize(file_path)
-    @file_path = file_path
-    @file_name = file_path.split('/').last
+  def initialize(bucket_folder)
     @bucket_name = ENV['S3_BUCKET_NAME'].freeze
-    @bucket_folder = ENV['S3_MAIN_FOLDER_NAME'].freeze
+    @bucket_folder = bucket_folder.freeze
   end
   
-  def run
+  def run(file_path)
+    @file_path = file_path
+    @file_name = file_path.split('/').last
     upload
   end
 
@@ -19,7 +19,7 @@ class S3::UploadService < ApplicationService
   def upload
     s3 = Aws::S3::Client.new
     s3_key = ''
-
+    
     File.open(file_path, 'rb') do |file|
       extention = File.extname(file)
       extention = extention[1..extention.length-1]

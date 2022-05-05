@@ -16,6 +16,7 @@ class ProfileImages::AddPicturesService < ApplicationService
 
   def add_picture
     new_pictures = []
+    uploader = S3::UploadService.new(ENV['S3_PROFILE_PICTURES_FOLDER_NAME'])
 
     pictures.each do |picture|
       picture_file = picture[1]['file']
@@ -24,7 +25,7 @@ class ProfileImages::AddPicturesService < ApplicationService
       extention = File.extname(picture_file.tempfile.path)
       raise StandardError, 'Extension not allowed' unless Picture.allowed_extentions.include?(extention)
 
-      s3_key = S3::UploadService.new(picture_file.tempfile.path).run
+      s3_key = uploader.run(picture_file.tempfile.path)
       new_pictures << Picture.create({storage_service_key: s3_key, position: picture_position, profile_id: profile.id})
     end
 
