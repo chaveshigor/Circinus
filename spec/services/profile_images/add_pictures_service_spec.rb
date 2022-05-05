@@ -30,9 +30,6 @@ RSpec.describe ProfileImages::AddPicturesService do
 
   describe '#run' do
     it 'upload picture to s3' do
-      file = File.open(new_file, 'rb')
-      file.close
-
       expect(Aws::S3::Client).to receive(:new).and_return(@fake_s3)
       expect(@fake_s3).to receive(:put_object)
 
