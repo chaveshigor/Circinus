@@ -14,12 +14,13 @@ class ProfileImages::DestroyPicturesService < ApplicationService
   attr_reader :pictures
 
   def destroy_pictures
+    deleter = S3::DeleteService.new
+
     pictures.each do |picture|
       picture_id = picture[1]['picture_id']
-
       deleted_picture = Picture.find(picture_id)
 
-      S3::DeleteService.new(deleted_picture.storage_service_key).run
+      deleter.run(deleted_picture.storage_service_key)
       deleted_picture.destroy
     end
   end
