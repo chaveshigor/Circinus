@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class S3::ShowService < ApplicationService
-  def initialize(s3_key)
-    @s3_key = s3_key
+  def initialize
     @bucket_name = ENV['S3_BUCKET_NAME'].freeze
   end
   
-  def run
+  def run(s3_key)
+    @s3_key = s3_key
     show_url
   end
 
