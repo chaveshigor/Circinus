@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get 'cities/:id', to: 'cities#show'
 
     resources :likes, only: %i[index create]
+    resources :dislikes, only: %i[create]
     resources :matches, only: %i[index destroy]
   end
 
