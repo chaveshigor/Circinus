@@ -1,24 +1,26 @@
 # frozen_string_literal: true
 
-class ProfileImages::MovePicturesService < ApplicationService
-  def initialize(pictures)
-    @pictures = pictures
-  end
+module ProfileImages
+  class MovePicturesService < ApplicationService
+    def initialize(pictures)
+      @pictures = pictures
+    end
 
-  def run
-    move_pictures
-  end
+    def run
+      move_pictures
+    end
 
-  private
+    private
 
-  attr_reader :pictures
+    attr_reader :pictures
 
-  def move_pictures
-    pictures.each do |picture|
-      picture_id = picture[1]['picture_id']
-      picture_position = picture[1]['position']
+    def move_pictures
+      pictures.each do |picture|
+        picture_id = picture[1]['picture_id']
+        picture_position = picture[1]['position']
 
-      picture = Picture.update(picture_id, position: picture_position)
+        Picture.update(picture_id, position: picture_position)
+      end
     end
   end
 end
