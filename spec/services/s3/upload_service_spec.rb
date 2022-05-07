@@ -14,9 +14,6 @@ RSpec.describe S3::UploadService do
 
   describe '#run' do
     it 'upload file to s3' do
-      expect(Aws::S3::Client).to receive(:new).and_return(@fake_s3)
-      expect(@fake_s3).to receive(:put_object)
-
       s3_key = S3::UploadService.new(ENV['S3_MAIN_FOLDER_NAME']).run(new_file)
       expect(s3_key).to eq("#{ENV['S3_MAIN_FOLDER_NAME']}/#{new_file_name}")
     end

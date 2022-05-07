@@ -30,15 +30,11 @@ RSpec.describe ProfileImages::AddPicturesService do
 
   describe '#run' do
     it 'upload picture to s3' do
-      expect(Aws::S3::Client).to receive(:new).and_return(@fake_s3)
-      expect(@fake_s3).to receive(:put_object)
-
       file_instance = mock_file_instance(new_file)
 
       pictures = [['0', {file: file_instance, position: '0'}.transform_keys!(&:to_s)]]
       pictures = ProfileImages::AddPicturesService.new(pictures, profile).run
 
-      expect(pictures.present?).to be_truthy
       expect(pictures.map(&:storage_service_key)).to eq(["#{profile_pics_folder}/#{new_file_name}"])
     end
 

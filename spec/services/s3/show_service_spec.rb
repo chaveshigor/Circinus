@@ -14,9 +14,6 @@ RSpec.describe S3::ShowService do
 
   describe '#run' do
     it 'show file url from s3' do
-      expect(Aws::S3::Presigner).to receive(:new).and_return(@fake_signer)
-      expect(@fake_signer).to receive(:presigned_request)
-
       picture_url = S3::ShowService.new.run(s3_key)
       expect(picture_url).to eq(url_example)
     end

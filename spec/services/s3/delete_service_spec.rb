@@ -14,9 +14,6 @@ RSpec.describe S3::DeleteService do
 
   describe '#run' do
     it 'delete file from s3' do
-      expect(Aws::S3::Client).to receive(:new).and_return(@fake_s3)
-      expect(@fake_s3).to receive(:delete_object)
-
       deleted = S3::DeleteService.new.run(s3_key)
       expect(deleted).to be_truthy
     end
