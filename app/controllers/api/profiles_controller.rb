@@ -3,9 +3,7 @@ class Api::ProfilesController < Api::ApiController
   before_action :check_city, only: %i[update]
 
   def index
-    current_user_city = City.find(@current_user.profile.city_id)
-    profiles = Profile.where({ city_id: current_user_city.id }).where.not({ user_id: @current_user.id })
-
+    profiles = Profile.except_current_profile(@current_user).from_same_city(@current_user).unseen_profiles.limit(10)
     profiles.each do |profile|
       profile.pictures.each do |picture|
         picture.url = S3::ShowService.new(picture.storage_service_key).run
