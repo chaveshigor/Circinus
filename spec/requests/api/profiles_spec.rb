@@ -6,8 +6,14 @@ require './spec/utils/auth_user'
 RSpec.describe 'Api::Profiles', type: :request do
   let!(:state) { create(:state) }
   let!(:city) { create(:city, state: state) }
+
   let!(:user) { create(:user) }
   let!(:user2) { create(:user, first_name: 'light', last_name: 'yagami', password_digest: 'death_note') }
+  let!(:user3) { create(:user, first_name: 'misa', last_name: 'misa') }
+
+  let!(:profile_sender) { create(:profile, city: city, user: user) }
+  let!(:profile_receiver) { create(:profile, city: city, user: user2) }
+  let!(:seen_profile) { create(:profile, city: city, user: user3) }
 
   def create_profile_request(jwt, city_id, born, description = 'I like hot dogs S2')
     post '/api/profiles', params: {
@@ -39,18 +45,23 @@ RSpec.describe 'Api::Profiles', type: :request do
     @born = Date.new(1996, 10, 25)
   end
 
-
   describe 'GET #index' do
-    context 'When show all profiles' do
-      it 'show profiles in the same city, excepted me' do
-        prof1 = Profile.create({ born: @born, description: 'I like cats with my S2', city_id: city.id, user_id: user.id })
-        prof2 = Profile.create({ born: @born, description: 'I need to eat some pie', city_id: city.id, user_id: user2.id })
-  
+    context 'When show profiles' do
+      it 'show profiles in the same city, except me' do  
         index_profiles(@jwt)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-        expect(response_body.data.map { |p| p['id'].to_i }).to eq([prof2.id])
-        expect(response_body.data.find { |p| p['id'].to_i == prof1.id }).to be(nil)
+        expect(response_body.data.map { |p| p['id'].to_i }).to eq([profile_receiver.id, seen_profile.id])
+        expect(response_body.data.find { |p| p['id'].to_i == profile_sender.id }).to be(nil)
+      end
+
+      it 'show profiles I havent interacted with' do
+        Dislike.create(profile_receiver_id: seen_profile.id, profile_sender_id: profile_sender.id)
+        index_profiles(@jwt)
+        response_body = JSON.parse(response.body, object_class: OpenStruct)
+
+        expect(response_body.data.map { |p| p['id'].to_i }).to eq([profile_receiver.id])
+        expect(response_body.data.find { |p| p['id'].to_i == profile_sender.id }).to be(nil)
       end
     end
   end
