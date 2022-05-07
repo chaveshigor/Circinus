@@ -12,11 +12,11 @@ RSpec.describe 'Api::Dislikes', type: :request do
   let!(:profile_example) { create(:profile, :with_location, user: user_example) }
 
   def create_dislike_request(jwt, profile_receiver_id)
-    post '/api/dislikes/', 
-    params: { 
-      dislike: { profile_receiver_id: profile_receiver_id }
-    }, 
-    headers: { Authorization: jwt }
+    post '/api/dislikes/',
+         params:  {
+           dislike: { profile_receiver_id: profile_receiver_id }
+         },
+         headers: { Authorization: jwt }
   end
 
   before(:each) do

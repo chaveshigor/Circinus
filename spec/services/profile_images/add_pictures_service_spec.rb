@@ -32,7 +32,7 @@ RSpec.describe ProfileImages::AddPicturesService do
     it 'upload picture to s3' do
       file_instance = mock_file_instance(new_file)
 
-      pictures = [['0', {file: file_instance, position: '0'}.transform_keys!(&:to_s)]]
+      pictures = [['0', { file: file_instance, position: '0' }.transform_keys!(&:to_s)]]
       pictures = ProfileImages::AddPicturesService.new(pictures, profile).run
 
       expect(pictures.map(&:storage_service_key)).to eq(["#{profile_pics_folder}/#{new_file_name}"])
@@ -41,8 +41,11 @@ RSpec.describe ProfileImages::AddPicturesService do
     it 'not upload a file with invalid format' do
       file_instance = mock_file_instance(invalid_file)
 
-      pictures = [['0', {file: file_instance, position: '0'}.transform_keys!(&:to_s)]]
-      expect { ProfileImages::AddPicturesService.new(pictures, profile).run }.to raise_error('Extension not allowed')
+      pictures = [['0', { file: file_instance, position: '0' }.transform_keys!(&:to_s)]]
+      expect do
+        ProfileImages::AddPicturesService.new(pictures,
+                                              profile).run
+      end.to raise_error('Extension not allowed')
     end
   end
 end

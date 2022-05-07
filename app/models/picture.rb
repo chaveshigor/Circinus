@@ -9,11 +9,10 @@ class Picture < ApplicationRecord
 
   ALLOWED_EXTENTIONS = ['.jpg', '.png', '.jpeg'].freeze
 
-  validates_presence_of :position
-  validates_presence_of :storage_service_key
+  validates :position, presence: true
+  validates :storage_service_key, presence: true
 
   def self.allowed_extentions
     ALLOWED_EXTENTIONS
   end
-
 end

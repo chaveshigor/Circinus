@@ -8,7 +8,7 @@ RSpec.describe 'Api::States', type: :request do
   def auth_user_request(email, password)
     post '/api/session/auth', params: {
       user: {
-        email: email,
+        email:    email,
         password: password
       }
     }

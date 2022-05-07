@@ -9,7 +9,7 @@ RSpec.describe ProfileImages::MovePicturesService do
   describe '#run' do
     it 'move pictures' do
       new_position = picture.position + 1
-      pictures = [['0', {picture_id: picture.id, position: new_position}.transform_keys!(&:to_s)]]
+      pictures = [['0', { picture_id: picture.id, position: new_position }.transform_keys!(&:to_s)]]
       ProfileImages::MovePicturesService.new(pictures).run
 
       expect(picture.reload.position).to eq(new_position)

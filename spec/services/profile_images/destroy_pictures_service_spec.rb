@@ -17,8 +17,10 @@ RSpec.describe ProfileImages::DestroyPicturesService do
       expect(Aws::S3::Client).to receive(:new).and_return(@fake_s3)
       expect(@fake_s3).to receive(:delete_object).and_return(true)
 
-      pictures = [['0', {picture_id: picture.id}.transform_keys!(&:to_s)]]
-      expect { ProfileImages::DestroyPicturesService.new(pictures).run }.to change { Picture.count }.by(-1)
+      pictures = [['0', { picture_id: picture.id }.transform_keys!(&:to_s)]]
+      expect { ProfileImages::DestroyPicturesService.new(pictures).run }.to change {
+                                                                              Picture.count
+                                                                            }.by(-1)
     end
   end
 end

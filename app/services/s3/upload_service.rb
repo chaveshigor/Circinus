@@ -3,7 +3,6 @@
 module S3
   class UploadService < ApplicationService
     def initialize(bucket_folder)
-      super
       @bucket_name = ENV['S3_BUCKET_NAME'].freeze
       @bucket_folder = bucket_folder.freeze
     end

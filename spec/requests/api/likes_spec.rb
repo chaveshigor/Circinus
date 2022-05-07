@@ -12,14 +12,14 @@ RSpec.describe 'Api::Likes', type: :request do
   let!(:profile_example) { create(:profile, :with_location, user: user_example) }
 
   def create_like_request(jwt, profile_receiver_id)
-    post '/api/likes/', 
-    params: { 
-      like: { profile_receiver_id: profile_receiver_id }
-    }, 
-    headers: { Authorization: jwt }
+    post '/api/likes/',
+         params:  {
+           like: { profile_receiver_id: profile_receiver_id }
+         },
+         headers: { Authorization: jwt }
   end
 
-  def get_likes_requests(jwt=@jwt)
+  def get_likes_requests(jwt = @jwt)
     get '/api/likes', headers: { Authorization: jwt }
   end
 
@@ -31,17 +31,18 @@ RSpec.describe 'Api::Likes', type: :request do
     context 'When user try to like another user' do
       context 'when it is not a match' do
         it 'create a new like' do
-          expect{ create_like_request(@jwt, profile_receiver.id) }.to change(Like, :count).by(1)
+          expect { create_like_request(@jwt, profile_receiver.id) }.to change(Like, :count).by(1)
           response_body = JSON.parse(response.body, object_class: OpenStruct)
-  
+
           expect(response_body.is_match).to eq(false)
           expect(response_body.liked_profile.id).to eq(profile_receiver.id)
         end
 
         it 'not like the same user twice' do
-          Like.create(profile_receiver_id: profile_receiver.id, profile_sender_id: profile_sender.id)
+          Like.create(profile_receiver_id: profile_receiver.id,
+                      profile_sender_id:   profile_sender.id)
 
-          expect{ create_like_request(@jwt, profile_receiver.id) }.to change(Like, :count).by(0)
+          expect { create_like_request(@jwt, profile_receiver.id) }.to change(Like, :count).by(0)
           response_body = JSON.parse(response.body, object_class: OpenStruct)
 
           expect(response_body.is_match).to eq(false)
@@ -51,27 +52,28 @@ RSpec.describe 'Api::Likes', type: :request do
 
       context 'when its a match' do
         it 'delete received like and create the match' do
-          Like.create(profile_receiver_id: profile_sender.id, profile_sender_id: profile_receiver.id)
-  
-          expect{ create_like_request(@jwt, profile_receiver.id) }.to change(Match, :count).by(1)
+          Like.create(profile_receiver_id: profile_sender.id,
+                      profile_sender_id:   profile_receiver.id)
+
+          expect { create_like_request(@jwt, profile_receiver.id) }.to change(Match, :count).by(1)
           response_body = JSON.parse(response.body, object_class: OpenStruct)
-  
+
           expect(response_body.is_match).to eq(true)
           expect(response_body.liked_profile.id).to eq(profile_receiver.id)
         end
       end
     end
   end
-  
+
   describe 'GET /show' do
     context 'When user try to see all likes received' do
       it 'show all likes' do
         Like.create(profile_receiver_id: profile_sender.id, profile_sender_id: profile_receiver.id)
         Like.create(profile_receiver_id: profile_sender.id, profile_sender_id: profile_example.id)
-  
+
         get_likes_requests
         response_body = JSON.parse(response.body, object_class: OpenStruct)
-  
+
         expect(response_body.likes.count).to eq(2)
         expect(response_body.likes).to match(JSON.parse(Like.all.to_json, object_class: OpenStruct))
       end

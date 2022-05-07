@@ -3,18 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-
   describe 'Assossiations' do
     it { should have_one(:profile) }
   end
 
-  describe "Validations" do
-    subject { User.new({
-      email: 'me@example.com',
-      password_digest: 'P@ssW0rd',
-      first_name: 'eren',
-      last_name: 'yeager'
-    }) }
+  describe 'Validations' do
+    subject do
+      User.new({
+                 email:           'me@example.com',
+                 password_digest: 'P@ssW0rd',
+                 first_name:      'eren',
+                 last_name:       'yeager'
+               })
+    end
 
     it { should validate_presence_of(:email) }
     it { should validate_uniqueness_of(:email) }
@@ -31,11 +32,11 @@ RSpec.describe User, type: :model do
 
   it 'create a new user' do
     user = User.new({
-      email: 'me@example.com',
-      password_digest: 'P@ssW0rd',
-      first_name: 'eren',
-      last_name: 'yeager'
-    })
+                      email:           'me@example.com',
+                      password_digest: 'P@ssW0rd',
+                      first_name:      'eren',
+                      last_name:       'yeager'
+                    })
 
     expect(user).to be_valid
     expect(user.full_name).to eq('Eren Yeager')

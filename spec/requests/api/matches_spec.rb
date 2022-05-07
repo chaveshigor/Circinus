@@ -11,11 +11,11 @@ RSpec.describe 'Api::Matches', type: :request do
   let!(:profile_receiver) { create(:profile, :with_location, user: user_receiver) }
   let!(:profile_example) { create(:profile, :with_location, user: user_example) }
 
-  def get_matches_request(jwt=@jwt)
+  def get_matches_request(jwt = @jwt)
     get '/api/matches', headers: { Authorization: jwt }
   end
 
-  def delete_match_request(match_id, jwt=@jwt)
+  def delete_match_request(match_id, jwt = @jwt)
     delete "/api/matches/#{match_id}", headers: { Authorization: jwt }
   end
 
@@ -28,7 +28,7 @@ RSpec.describe 'Api::Matches', type: :request do
       it 'return all matches' do
         Match.create(profile_1_id: profile_receiver.id, profile_2_id: profile_sender.id)
         Match.create(profile_1_id: profile_sender.id, profile_2_id: profile_example.id)
-        
+
         get_matches_request
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
@@ -44,12 +44,12 @@ RSpec.describe 'Api::Matches', type: :request do
       it 'delete the match' do
         match = Match.create(profile_1_id: profile_receiver.id, profile_2_id: profile_sender.id)
 
-        expect{ delete_match_request(match.id) }.to change { Match.count }.by(-1)
+        expect { delete_match_request(match.id) }.to change { Match.count }.by(-1)
         expect(response.status).to eq(204)
       end
 
       it 'does not delete an nonexistent match' do
-        expect{ delete_match_request('99999') }.to change { Match.count }.by(0)
+        expect { delete_match_request('99999') }.to change { Match.count }.by(0)
         expect(response.status).to eq(404)
       end
     end

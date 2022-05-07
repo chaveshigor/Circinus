@@ -2,7 +2,7 @@
 
 class Api::ProfileSerializer < AplicationSerializer
   attributes :id, :description, :city_id, :user_id
-  
+
   attribute :age do |object|
     object.calculate_age
   end

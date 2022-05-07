@@ -11,10 +11,10 @@ RSpec.describe 'Api::Cities', type: :request do
     context 'When try to get all cities from a state' do
       it 'show all cities from a state' do
         get "/api/states/#{state.id}/cities"
-  
+
         response_body = JSON.parse(response.body, object_class: OpenStruct)
         cities = response_body.cities
-  
+
         expect(cities.count).to eq(2)
         expect(cities.find { |c| c['id'] == city1.id }.present?).to be(true)
         expect(cities.find { |c| c['id'] == city2.id }.present?).to be(true)
@@ -22,14 +22,13 @@ RSpec.describe 'Api::Cities', type: :request do
 
       it 'dont show cities from an unexistent state' do
         get '/api/states/99999/cities'
-  
+
         response_body = JSON.parse(response.body, object_class: OpenStruct)
-  
+
         expect(response_body.status).to eq('failed')
         expect(response_body.message).to eq('state dont exists')
       end
     end
-
   end
 
   describe 'GET /show' do
@@ -37,7 +36,7 @@ RSpec.describe 'Api::Cities', type: :request do
       it 'show the state' do
         get "/api/cities/#{city1.id}"
         response_body = JSON.parse(response.body, object_class: OpenStruct)
-  
+
         expect(response_body.state.id).to eq(state.id)
         expect(response_body.city.id).to eq(city1.id)
       end

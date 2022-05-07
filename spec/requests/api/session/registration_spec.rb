@@ -12,21 +12,21 @@ RSpec.describe 'Api::States', type: :request do
 
   def create_user_request
     post '/api/session/registration', params: {
-      new_user: {
-        first_name: 'son',
-        last_name: 'goku',
-        email: 'son_goku@example.com',
+      new_user:    {
+        first_name:      'son',
+        last_name:       'goku',
+        email:           'son_goku@example.com',
         password_digest: '12345678'
       },
-      new_profile: { 
-        born: Date.new(1996, 10, 25),
+      new_profile: {
+        born:        Date.new(1996, 10, 25),
         description: 'I like hot dogs S2',
-        city_id: city.id,
+        city_id:     city.id
       }
     }
   end
 
-  def delete_user_request(jwt=@jwt)
+  def delete_user_request(jwt = @jwt)
     delete '/api/session/registration', headers: { Authorization: jwt }
   end
 
@@ -41,18 +41,22 @@ RSpec.describe 'Api::States', type: :request do
   describe 'POST /create' do
     context 'When user try to create an account' do
       it 'create a new user and a new profile' do
-        expect{ create_user_request }.to change(User, :count).by(1).and change(Profile, :count).by(1)
+        expect do
+          create_user_request
+        end.to change(User, :count).by(1).and change(Profile, :count).by(1)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
         expect(response.status).to eq(201)
         expect(response_body.user.present?).to be(true)
         expect(response_body.profile.present?).to be(true)
       end
-   
+
       it 'not create a user with an existent email' do
         create_user_request
 
-        expect{ create_user_request }.to change(User, :count).by(0).and change(Profile, :count).by(0)
+        expect do
+          create_user_request
+        end.to change(User, :count).by(0).and change(Profile, :count).by(0)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
         expect(response.status).to eq(403)
@@ -64,7 +68,9 @@ RSpec.describe 'Api::States', type: :request do
   describe 'DELETE /destroy' do
     context 'When user try to delete his account' do
       it 'delete an user and his profile' do
-        expect{ delete_user_request }.to change(User, :count).by(-1).and change(Profile, :count).by(-1)
+        expect do
+          delete_user_request
+        end.to change(User, :count).by(-1).and change(Profile, :count).by(-1)
 
         expect(response.status).to eq(204)
       end

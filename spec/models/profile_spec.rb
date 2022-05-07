@@ -14,7 +14,7 @@ RSpec.describe Profile, type: :model do
     it { should have_many(:profile_hobbies) }
   end
 
-  describe "Validations" do
+  describe 'Validations' do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:city) }
     it { should validate_length_of(:description).is_at_least(16) }
@@ -23,11 +23,11 @@ RSpec.describe Profile, type: :model do
   it 'create a new profile' do
     born_date = Date.new(1996, 10, 25)
     prof = Profile.new({
-      description: 'Rasengan is the best jutsu',
-      born: born_date,
-      city_id: city.id,
-      user_id: user.id
-    })
+                         description: 'Rasengan is the best jutsu',
+                         born:        born_date,
+                         city_id:     city.id,
+                         user_id:     user.id
+                       })
 
     expect(prof).to be_valid
     expect(prof.calculate_age).to be((Date.today - born_date).to_i / 365)

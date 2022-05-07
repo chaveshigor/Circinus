@@ -10,14 +10,16 @@ class Profile < ApplicationRecord
   has_many :profile_hobbies
   has_many :hobbies, through: :profile_hobbies
 
-  validates_presence_of :user
-  validates_presence_of :city
+  validates :user, presence: true
+  validates :city, presence: true
 
   validates :description, presence: true, length: { minimum: 16 }
 
-  scope :except_current_profile, -> (current_user) { where.not({ user_id: current_user.id }) }
-  scope :from_same_city, -> (current_user) { where({ city_id: current_user.profile.city_id }) }
-  scope :unseen_profiles, -> () { where.not(id: Dislike.all.select(:profile_receiver_id)).where.not(id: Like.all.select(:profile_receiver_id)) }
+  scope :except_current_profile, ->(current_user) { where.not({ user_id: current_user.id }) }
+  scope :from_same_city, ->(current_user) { where({ city_id: current_user.profile.city_id }) }
+  scope :unseen_profiles, lambda {
+                            where.not(id: Dislike.all.select(:profile_receiver_id)).where.not(id: Like.all.select(:profile_receiver_id))
+                          }
 
   def calculate_age
     (Date.today - Date.new(born.year, born.month, born.day)).to_i / 365

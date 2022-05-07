@@ -11,10 +11,10 @@ RSpec.describe 'Api::States', type: :request do
     context 'When get all states' do
       it 'show all states' do
         get '/api/states'
-  
+
         all_states = JSON.parse(response.body)
         number_of_states = State.all.count
-  
+
         expect(all_states.count).to eq(number_of_states)
         expect(State.find(state1.id)).to eq(state1)
         expect(State.find(state2.id)).to eq(state2)

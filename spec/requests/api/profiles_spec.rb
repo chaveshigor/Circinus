@@ -8,7 +8,9 @@ RSpec.describe 'Api::Profiles', type: :request do
   let!(:city) { create(:city, state: state) }
 
   let!(:user) { create(:user) }
-  let!(:user2) { create(:user, first_name: 'light', last_name: 'yagami', password_digest: 'death_note') }
+  let!(:user2) do
+    create(:user, first_name: 'light', last_name: 'yagami', password_digest: 'death_note')
+  end
   let!(:user3) { create(:user, first_name: 'misa', last_name: 'misa') }
 
   let!(:profile_sender) { create(:profile, city: city, user: user) }
@@ -18,9 +20,9 @@ RSpec.describe 'Api::Profiles', type: :request do
   def create_profile_request(jwt, city_id, born, description = 'I like hot dogs S2')
     post '/api/profiles', params: {
       profile: {
-        born: born,
+        born:        born,
         description: description,
-        city_id: city_id
+        city_id:     city_id
       }
     }, headers: {
       Authorization: jwt
@@ -31,7 +33,7 @@ RSpec.describe 'Api::Profiles', type: :request do
     put "/api/profiles/#{profile_id}", headers: { Authorization: jwt }, params: {
       profile_edit: {
         description: description,
-        city_id: city_id,
+        city_id:     city_id
       }
     }
   end
@@ -47,11 +49,13 @@ RSpec.describe 'Api::Profiles', type: :request do
 
   describe 'GET #index' do
     context 'When show profiles' do
-      it 'show profiles in the same city, except me' do  
+      it 'show profiles in the same city, except me' do
         index_profiles(@jwt)
         response_body = JSON.parse(response.body, object_class: OpenStruct)
 
-        expect(response_body.data.map { |p| p['id'].to_i }).to eq([profile_receiver.id, seen_profile.id])
+        expect(response_body.data.map do |p|
+                 p['id'].to_i
+               end).to eq([profile_receiver.id, seen_profile.id])
         expect(response_body.data.find { |p| p['id'].to_i == profile_sender.id }).to be(nil)
       end
 
@@ -67,9 +71,10 @@ RSpec.describe 'Api::Profiles', type: :request do
   end
 
   describe 'PUT #update' do
-    context "When user update profile" do
+    context 'When user update profile' do
       it 'update a profile description' do
-        prof1 = Profile.create({ born: @born, description: 'I like cats with my S2', city_id: city.id, user_id: user.id })
+        prof1 = Profile.create({ born: @born, description: 'I like cats with my S2',
+city_id: city.id, user_id: user.id })
         description = 'I will be the god of the new world'
 
         update_profile_request(@jwt, prof1.id, city.id, description)

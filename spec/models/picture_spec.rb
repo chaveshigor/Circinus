@@ -7,7 +7,7 @@ RSpec.describe Picture, type: :model do
     it { should belong_to(:profile) }
   end
 
-  describe "Validations" do
+  describe 'Validations' do
     it { should validate_presence_of(:position) }
     it { should validate_presence_of(:storage_service_key) }
   end

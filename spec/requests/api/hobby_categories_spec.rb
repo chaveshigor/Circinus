@@ -37,7 +37,7 @@ RSpec.describe 'Api::Profiles', type: :request do
       it 'dont return hobby categories when the user is not logged' do
         show_all_hobby_categories_requests('')
 
-        expect(response.status).to be(401)        
+        expect(response.status).to be(401)
       end
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe 'Api::Profiles', type: :request do
         hobby_category = hobby.hobby_category
         hobby_category_serialized = Api::HobbyCategorySerializer.new(hobby_category)
         hobby_category_serialized = JSON.parse(hobby_category_serialized.to_json)
-        
+
         expect(response.status).to be(200)
         expect(response_body['hobby_category']).to eq(hobby_category_serialized)
       end
@@ -66,5 +66,4 @@ RSpec.describe 'Api::Profiles', type: :request do
       end
     end
   end
-
 end
