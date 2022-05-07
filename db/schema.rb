@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_21_031051) do
+ActiveRecord::Schema.define(version: 2022_05_06_005837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(version: 2022_04_21_031051) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_cities_on_state_id"
+  end
+
+  create_table "dislikes", force: :cascade do |t|
+    t.bigint "profile_sender_id"
+    t.bigint "profile_receiver_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_receiver_id"], name: "index_dislikes_on_profile_receiver_id"
+    t.index ["profile_sender_id"], name: "index_dislikes_on_profile_sender_id"
   end
 
   create_table "hobbies", force: :cascade do |t|
@@ -84,6 +93,15 @@ ActiveRecord::Schema.define(version: 2022_04_21_031051) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "seen_users", force: :cascade do |t|
+    t.bigint "profile_viewer_id"
+    t.bigint "profile_seen_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_seen_id"], name: "index_seen_users_on_profile_seen_id"
+    t.index ["profile_viewer_id"], name: "index_seen_users_on_profile_viewer_id"
+  end
+
   create_table "states", force: :cascade do |t|
     t.string "name"
     t.string "uf"
@@ -103,6 +121,8 @@ ActiveRecord::Schema.define(version: 2022_04_21_031051) do
   end
 
   add_foreign_key "cities", "states"
+  add_foreign_key "dislikes", "profiles", column: "profile_receiver_id"
+  add_foreign_key "dislikes", "profiles", column: "profile_sender_id"
   add_foreign_key "hobbies", "hobby_categories"
   add_foreign_key "likes", "profiles", column: "profile_receiver_id"
   add_foreign_key "likes", "profiles", column: "profile_sender_id"
@@ -113,4 +133,6 @@ ActiveRecord::Schema.define(version: 2022_04_21_031051) do
   add_foreign_key "profile_hobbies", "profiles"
   add_foreign_key "profiles", "cities"
   add_foreign_key "profiles", "users"
+  add_foreign_key "seen_users", "profiles", column: "profile_seen_id"
+  add_foreign_key "seen_users", "profiles", column: "profile_viewer_id"
 end
