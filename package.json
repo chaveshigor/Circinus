@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@babel/preset-react": "^7.16.7",
-    "@rails/actioncable": "^6.0.0",
+    "@rails/actioncable": "^6.1.5",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "5.4.3",
@@ -19,6 +19,8 @@
   "version": "0.1.0",
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.7",
+    "@types/actioncable": "^5.2.7",
+    "@types/rails-actioncable": "^0.0.21",
     "@types/react-router-dom": "^5.3.3",
     "fork-ts-checker-webpack-plugin": "^7.2.1",
     "webpack-dev-server": "^3"
