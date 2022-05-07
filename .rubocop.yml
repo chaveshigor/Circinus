@@ -43,7 +43,7 @@ Style/WordArray:
 # Defaults all strings to double quotes. Less performant, but
 # nicer for consistency, and for adding interpolation later.
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 # Prettier hashes.
 Layout/HashAlignment:
@@ -59,6 +59,10 @@ Lint/UnusedBlockArgument:
 # but will still warn.
 Lint/UnusedMethodArgument:
   AutoCorrect: false
+
+Lint/MissingSuper:
+  Exclude:
+    - 'app/services/**/*'
 
 Rails/HasAndBelongsToMany:
   Enabled: false
