@@ -36,6 +36,7 @@ gem 'jsonapi-serializer' # Serializer for Ruby objects
 gem 'fog-aws' # 'fog' gem to support Amazon Web Services
 gem 'carrierwave' # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem 'carrierwave-aws'
+gem 'sidekiq'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
