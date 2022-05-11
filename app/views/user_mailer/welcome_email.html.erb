@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      a:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= @user.full_name %>, Bem vindo(a) a uma nova galáxia</h1>
+    <p>
+      Aqui você vai encontrar todo tipo de gente. Desde gente esquisita (otakus fedidos)
+      até gente que você vai conversar pro resto da vida.<br>
+      Porém, pra usufruir do nosso maravilhoso serviço de culpido intergalático, falta 
+      você confirmar sua conta. Pra isso, só clicar aqui em baixo:<br>
+    </p>
+    <a href='https://base_url/<%= @user.confirmation_token %>' target='_blank'>CLICA EM MIM</a>
+    <p>Boa viagem. Equipe Circinus!</p>
+  </body>
+</html>

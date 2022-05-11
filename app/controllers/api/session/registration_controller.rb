@@ -4,13 +4,14 @@ class Api::Session::RegistrationController < Api::ApiController
   before_action :authorize_request, only: %i[destroy]
 
   def create
-    user = User.find_by_email(new_user_params[:email])
+    user = User.find_by(email: new_user_params[:email])
     return forbidden_request('user already exists') if user.present?
 
     new_user = User.create(new_user_params)
     new_profile = create_profile(new_user, new_profile_params)
 
     ProfileImages::AddPicturesService.new(params[:add_pictures], new_profile).run if params[:add_pictures].present?
+    Account::ConfirmateAccountWorker.perform_async(new_user.id)
 
     render json: { user: new_user.send_user, profile: Api::ProfileSerializer.new(new_profile).serializable_hash[:data][:attributes]}, status: :created
   end
